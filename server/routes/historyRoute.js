@@ -5,13 +5,33 @@ const Action = require("../models/Action");
 
 history
   .route("/")
-  .get((_, res) => {
+  .get((req, res) => {
     Action.find((err, actions) => {
       if (err) res.status(500).send({ err });
-      else res.send(actions);
+      else {
+        const response = {
+          page: 1,
+          pages: Math.ceil(actions.length / 50),
+          actions
+        };
+        if (actions.length > 50) {
+          // Return 50 results per page, starting at the page sent by user
+          response.actions = actions.length.splice(
+            (req.query.page && req.query.page * 50 < actions.length
+              ? req.query.page * 50
+              : 0) + 1,
+            50
+          );
+          response.page =
+            req.query.page && req.query.page * 50 < actions.length
+              ? req.query.page
+              : 1;
+        }
+        res.send(response);
+      }
     });
   })
-  .post((_, res) => {
+  .post((req, res) => {
     const newAction = new Action(req.body);
     newAction.save((err, action) => {
       if (err) res.status(500).send({ err });
@@ -30,7 +50,7 @@ history
   .delete((req, res) => {
     Action.findByIdAndRemove(req.params.id, (err, action) => {
       if (err) res.status(404).send({ err });
-      else res.send(204);
+      else res.sendStatus(204);
     });
   })
   .put((req, res) => {
@@ -44,3 +64,5 @@ history
       }
     );
   });
+
+module.exports = history;
