@@ -14,7 +14,7 @@ activities
   .post((req, res) => {
     Activity.create(req.body, (err, activity) => {
       if (err) res.status(500).send({ err });
-      else res.send(activity);
+      else res.status(201).send(activity);
     });
   });
 

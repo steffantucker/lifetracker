@@ -45,7 +45,7 @@ timers.route("/start").post((req, res) => {
   const newTimer = new Timer(req.body);
   newTimer.save((err, timer) => {
     if (err) res.status(404).send({ err });
-    else res.send(timer);
+    else res.status(201).send(timer);
   });
 });
 

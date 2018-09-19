@@ -1,28 +1,49 @@
+* {
+  color: #ddd;
+  background: #222;
+}
+
 .App {
-  text-align: center;
+  padding: 0 10%;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.nav {
+  font-family: "Space Mono", monospace;
+  padding: 5px 0;
+  width: 100%;
+  border-bottom: 2px solid #ccc;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.logo {
+  max-width: 100px;
 }
 
-.App-title {
-  font-size: 1.5em;
+.prepost,
+.link {
+  font-size: 1.3rem;
 }
 
-.App-intro {
-  font-size: large;
+.prepost {
+  font-weight: 700;
+  margin: 0 10px;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.brackets {
+  font-size: 1.8rem;
+  color: #84d;
+}
+
+.link {
+  font-weight: 400;
+  padding: 0 5px;
+  color: #66d;
+  transition: font-size 0.25s;
+}
+
+.link:active {
+  text-decoration: none;
+}
+
+.link:hover {
+  font-size: 1.5rem;
 }
