@@ -20,13 +20,11 @@ timers
     });
   })
   .put((req, res) => {
-    console.log("entered put");
     Timer.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true, runValidators: true },
       (err, timer) => {
-        console.log("entered findbyidandupdate");
         if (err) res.status(404).send({ err });
         else res.send(timer);
       }

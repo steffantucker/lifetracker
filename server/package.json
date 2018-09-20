@@ -11,6 +11,7 @@
   "author": "Steffan Tucker <steffantucker@protonmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
+    "@material-ui/core": "^3.1.0",
     "express": "^4.16.3",
     "mongoose": "^5.2.15",
     "morgan": "^1.9.1"

@@ -1,7 +1,7 @@
-* {
+/* * {
   color: #ddd;
   background: #222;
-}
+} */
 
 .App {
   padding: 0 10%;
@@ -10,6 +10,7 @@
 .nav {
   font-family: "Space Mono", monospace;
   padding: 5px 0;
+  margin-bottom: 10px;
   width: 100%;
   border-bottom: 2px solid #ccc;
 }

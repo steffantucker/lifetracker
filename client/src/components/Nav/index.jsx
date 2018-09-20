@@ -6,14 +6,6 @@ export default class Nav extends Component {
     loc: "home"
   };
 
-  style = {
-    nav: {
-      padding: "5px 10%"
-    },
-    logo: {},
-    prepost: {},
-    brackets: {}
-  };
   render() {
     return (
       <div className="nav">
