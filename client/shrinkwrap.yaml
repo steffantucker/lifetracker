@@ -2,6 +2,7 @@ dependencies:
   '@material-ui/core': 3.1.0
   '@material-ui/icons': 3.0.1
   axios: 0.18.0
+  moment: 2.22.2
   prop-types: 15.6.2
   react: 16.5.2
   react-dom: 16.5.2
@@ -5440,6 +5441,10 @@ packages:
     resolution:
       integrity: sha1-MAV0OOrGz3+MR2fzhkjWaX11yQM=
       tarball: 'http://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz'
+  /moment/2.22.2:
+    dev: false
+    resolution:
+      integrity: sha1-PCV/mDn8DpP/UxSWMiOeuQeD/2Y=
   /ms/2.0.0:
     dev: false
     resolution:
@@ -8624,6 +8629,7 @@ specifiers:
   '@material-ui/core': ^3.1.0
   '@material-ui/icons': ^3.0.1
   axios: ^0.18.0
+  moment: ^2.22.2
   prop-types: ^15.6.2
   react: ^16.5.2
   react-dom: ^16.5.2

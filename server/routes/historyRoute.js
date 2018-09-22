@@ -1,4 +1,5 @@
 const express = require("express");
+const moment = require("moment");
 const history = express.Router();
 
 const Action = require("../models/Action");
@@ -6,30 +7,46 @@ const Action = require("../models/Action");
 history
   .route("/")
   .get((req, res) => {
-    Action.find((err, actions) => {
-      if (err) res.status(500).send({ err });
-      else {
-        const response = {
-          page: 1,
-          pages: Math.ceil(actions.length / 50),
-          actions
-        };
-        if (actions.length > 50) {
-          // Return 50 results per page, starting at the page sent by user
-          response.actions = actions.length.splice(
-            (req.query.page && req.query.page * 50 < actions.length
-              ? req.query.page * 50
-              : 0) + 1,
-            50
-          );
-          response.page =
-            req.query.page && req.query.page * 50 < actions.length
-              ? req.query.page
-              : 1;
+    Action.find()
+      .populate("activityId")
+      .exec((err, actions) => {
+        if (err) res.status(500).send({ err });
+        else {
+          const response = {
+            page: 1,
+            pages: Math.ceil(actions.length / 50),
+            actions
+          };
+          if (req.query.sort) {
+            switch (req.query.sort) {
+              case "date":
+                const newActions = {};
+                for (action of response.actions) {
+                  if (newActions[moment(action.endTime).format("L")])
+                    newActions[moment(action.endTime).format("L")].push(action);
+                  else
+                    newActions[moment(action.endTime).format("L")] = [action];
+                }
+                response.actions = newActions;
+                break;
+            }
+          }
+          if (actions.length > 50) {
+            // Return 50 results per page, starting at the page sent by user
+            response.actions = actions.length.splice(
+              (req.query.page && req.query.page * 50 < actions.length
+                ? req.query.page * 50
+                : 0) + 1,
+              50
+            );
+            response.page =
+              req.query.page && req.query.page * 50 < actions.length
+                ? req.query.page
+                : 1;
+          }
+          res.send(response);
         }
-        res.send(response);
-      }
-    });
+      });
   })
   .post((req, res) => {
     const newAction = new Action(req.body);

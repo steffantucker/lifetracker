@@ -11,10 +11,12 @@ const schema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true
+    required: true,
+    default: ""
   },
   activityId: {
     type: mongoose.SchemaTypes.ObjectId,
+    ref: "Activity",
     required: true
   }
 });

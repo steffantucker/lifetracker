@@ -5,10 +5,12 @@ const Timer = require("../models/Timer");
 const Action = require("../models/Action");
 
 timers.route("/").get((_, res) => {
-  Timer.find((err, timer) => {
-    if (err) res.status(500).send({ err });
-    else res.send(timer);
-  });
+  Timer.find()
+    .populate("activityId")
+    .exec((err, timer) => {
+      if (err) res.status(500).send({ err });
+      else res.send(timer);
+    });
 });
 
 timers
@@ -43,7 +45,13 @@ timers.route("/start").post((req, res) => {
   const newTimer = new Timer(req.body);
   newTimer.save((err, timer) => {
     if (err) res.status(404).send({ err });
-    else res.status(201).send(timer);
+    else
+      Action.findById(timer._id)
+        .populate("activityId")
+        .exec((err, t) => {
+          if (err) console.log(err);
+          else res.status(201).send(t);
+        });
   });
 });
 

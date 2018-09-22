@@ -2,21 +2,22 @@ import React, { Component } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import {
-  Card,
-  CardContent,
-  CardActions,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
   Grid,
   Button,
   TextField,
-  Typography,
   withStyles
 } from "@material-ui/core";
+import { ExpandMore } from "@material-ui/icons";
 
 import Activity from "./Activity";
 
 const styles = {
   gridItem: {
-    minHeight: 150
+    width: "100%",
+    height: "100%"
   }
 };
 
@@ -44,38 +45,36 @@ class What extends Component {
   render() {
     console.log(this.state.activities);
     return (
-      <Grid container spacing={16}>
-        <Grid item xs={4}>
-          <Card>
-            <CardContent>
-              <Grid container direction="column">
-                <TextField
-                  id="activityTitle"
-                  name="title"
-                  label="Name"
-                  value={this.state.title}
-                  onChange={this.handleChange}
-                />
-                <TextField
-                  id="activityDescription"
-                  name="description"
-                  label="Default description"
-                  value={this.state.description}
-                  onChange={this.handleChange}
-                  multiline
-                  rows="3"
-                />
-              </Grid>
-            </CardContent>
-            <CardActions>
-              <Button color="primary" onClick={this.handleSubmit}>
-                Add activity
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid>
-        {this.state.activities.map(activity => (
-          <Grid item xs={2}>
+      <ExpansionPanel>
+        <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+          New Activity
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <Grid container direction="column">
+            <TextField
+              id="activityTitle"
+              name="title"
+              label="Name"
+              value={this.state.title}
+              onChange={this.handleChange}
+            />
+            <TextField
+              id="activityDescription"
+              name="description"
+              label="Default description"
+              value={this.state.description}
+              onChange={this.handleChange}
+              multiline
+              rows="2"
+            />
+          </Grid>
+          <Button color="primary" onClick={this.handleSubmit}>
+            Add activity
+          </Button>
+        </ExpansionPanelDetails>
+
+        {/* {this.state.activities.map(activity => (
+          <Grid item xs={3} className={this.classes.gridItem}>
             <Activity
               key={activity._id}
               id={activity._id}
@@ -84,8 +83,8 @@ class What extends Component {
               delete={this.deleteActivity}
             />
           </Grid>
-        ))}
-      </Grid>
+        ))} */}
+      </ExpansionPanel>
     );
   }
 

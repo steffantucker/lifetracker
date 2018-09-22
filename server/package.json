@@ -12,7 +12,9 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@material-ui/core": "^3.1.0",
+    "client": "^0.0.1",
     "express": "^4.16.3",
+    "moment": "^2.22.2",
     "mongoose": "^5.2.15",
     "morgan": "^1.9.1"
   }

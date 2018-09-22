@@ -11,6 +11,7 @@ const schema = new mongoose.Schema({
   },
   activityId: {
     type: mongoose.SchemaTypes.ObjectId,
+    ref: "Activity",
     required: true
   }
 });

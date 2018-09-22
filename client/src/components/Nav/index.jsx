@@ -8,7 +8,7 @@ export default class Nav extends Component {
 
   render() {
     return (
-      <div className="nav">
+      <nav className="nav">
         <Link to="/">
           <img
             className="logo"
@@ -31,7 +31,7 @@ export default class Nav extends Component {
         </span>
         <span className="brackets">]</span>
         <span className="prepost">Doing/Done</span>
-      </div>
+      </nav>
     );
   }
 }
