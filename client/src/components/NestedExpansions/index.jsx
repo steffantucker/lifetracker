@@ -5,12 +5,12 @@ import {
   ExpansionPanelSummary,
   Grid
 } from "@material-ui/core";
-import { ExpandMore } from "@material-ui/icons";
+import { ExpandMoreRounded } from "@material-ui/icons";
 
 const NestedExpansions = props => {
   return (
     <ExpansionPanel>
-      <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+      <ExpansionPanelSummary expandIcon={<ExpandMoreRounded />}>
         {typeof props.summary === "function" ? props.summary() : props.summary}
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>

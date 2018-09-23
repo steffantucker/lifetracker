@@ -16,10 +16,12 @@ timers.route("/").get((_, res) => {
 timers
   .route("/:id")
   .get((req, res) => {
-    Timer.findById(req.params.id, (err, timer) => {
-      if (err) res.status(404).send({ err });
-      else res.send(timer);
-    });
+    Timer.findById(req.params.id)
+      .populate("activityId")
+      .exec((err, timer) => {
+        if (err) res.status(404).send({ err });
+        else res.send(timer);
+      });
   })
   .put((req, res) => {
     Timer.findByIdAndUpdate(
@@ -34,6 +36,7 @@ timers
   })
   .delete((req, res) => {
     Timer.findByIdAndRemove(req.params.id, (err, timer) => {
+      console.log(timer);
       if (err) res.status(404).send({ err });
       else res.status(204).send();
     });
@@ -46,9 +49,10 @@ timers.route("/start").post((req, res) => {
   newTimer.save((err, timer) => {
     if (err) res.status(404).send({ err });
     else
-      Action.findById(timer._id)
+      Timer.findById(timer._id)
         .populate("activityId")
         .exec((err, t) => {
+          console.log(t);
           if (err) console.log(err);
           else res.status(201).send(t);
         });
@@ -56,9 +60,16 @@ timers.route("/start").post((req, res) => {
 });
 
 timers.route("/end/:id").get((req, res) => {
-  Timer.findById(req.params.id, (err, timer) => {
+  Timer.findByIdAndRemove(req.params.id, (err, timer) => {
     if (err) return res.status(404).send();
-    const newAction = new Action({ ...timer._doc, endTime: Date.now() });
+    const { activityId, description, startTime, _id } = timer;
+    const newAction = new Action({
+      activityId,
+      description,
+      startTime,
+      _id,
+      endTime: Date.now()
+    });
     newAction.save((er, action) => {
       if (er) res.status(500).send({ er });
       else res.send(action);

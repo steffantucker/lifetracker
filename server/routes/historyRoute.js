@@ -59,10 +59,12 @@ history
 history
   .route("/:id")
   .get((req, res) => {
-    Action.findById(req.params.id, (err, action) => {
-      if (err) res.status(404).send({ err });
-      else res.send(action);
-    });
+    Action.findById(req.params.id)
+      .populate("activityId")
+      .exec((err, action) => {
+        if (err) res.status(404).send({ err });
+        else res.send(action);
+      });
   })
   .delete((req, res) => {
     Action.findByIdAndRemove(req.params.id, (err, action) => {

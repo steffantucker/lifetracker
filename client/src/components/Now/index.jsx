@@ -12,10 +12,15 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  TextField,
   Typography,
   withStyles
 } from "@material-ui/core";
-import { StopRounded } from "@material-ui/icons";
+import {
+  StopRounded,
+  RefreshRounded,
+  ExpandMoreRounded
+} from "@material-ui/icons";
 
 const styles = {
   select: {
@@ -30,12 +35,19 @@ class Now extends Component {
     this.state = {
       actions: [],
       activities: [],
-      activity: ""
+      activity: "",
+      description: ""
     };
     this.classes = props.classes;
   }
 
   componentDidMount() {
+    console.log("mounted");
+    this.refresh();
+  }
+
+  refresh = () => {
+    console.log("refreshing");
     axios
       .get("/timers")
       .then(res => this.setState({ actions: res.data }))
@@ -44,33 +56,45 @@ class Now extends Component {
       .get("/activities")
       .then(res => this.setState({ activities: res.data }))
       .catch(err => console.error(err));
-  }
+  };
 
-  stop = id =>
+  stop = id => {
     axios.get(`/timers/end/${id}`).then(res =>
       this.setState(prev => ({
         actions: prev.actions.filter(v => v._id !== id)
       }))
     );
+  };
 
   handleChange = e => this.setState({ [e.target.name]: e.target.value });
 
   handleSubmit = e => {
-    axios
-      .post(`/timers/start`, { activityId: this.state.activity })
-      .then(res =>
-        this.setState(prev => ({
-          actions: [...prev.actions, res.data],
-          activity: ""
-        })).catch(err => console.log(err))
-      );
+    const body = { activityId: this.state.activity };
+    if (this.state.description !== "")
+      body.description = this.state.description;
+    else
+      body.description = this.state.activities.find(
+        v => (v._id = this.state.activity)
+      ).description;
+    axios.post(`/timers/start`, body).then(res => {
+      console.log(res);
+      this.setState(prev => ({
+        actions: [...prev.actions, res.data],
+        activity: "",
+        description: ""
+      })).catch(err => console.log(err));
+    });
   };
 
   render() {
+    console.log(this.state);
     return (
       <div>
+        <IconButton onClick={this.refresh} size="medium">
+          <RefreshRounded />
+        </IconButton>
         <ExpansionPanel>
-          <ExpansionPanelSummary>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreRounded />}>
             <FormControl>
               <InputLabel htmlFor="activity">New Activity</InputLabel>
               <Select
@@ -83,38 +107,52 @@ class Now extends Component {
                   <em>Choose one</em>
                 </MenuItem>
                 {this.state.activities.map(v => (
-                  <MenuItem value={v._id}>{v.title}</MenuItem>
+                  <MenuItem key={v._id} value={v._id}>
+                    {v.title}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
             <Button onClick={this.handleSubmit}>Start</Button>
           </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <TextField
+              id="description"
+              name="description"
+              label="Description"
+              value={this.state.description}
+              onChange={this.handleChange}
+              multiline
+              rows={2}
+            />
+          </ExpansionPanelDetails>
         </ExpansionPanel>
-        {this.state.actions.map(action => {
-          return (
-            <ExpansionPanel item>
-              <ExpansionPanelSummary>
-                <Grid container justify="space-between">
-                  <Grid item>
-                    {moment(action.startTime).format("lll")} -{" "}
-                    {action.activityId.title}
+        {this.state.actions &&
+          this.state.actions.map(action => {
+            return (
+              <ExpansionPanel key={action._id}>
+                <ExpansionPanelSummary>
+                  <Grid container justify="space-between">
+                    <Grid item>
+                      {moment(action.startTime).format("lll")} -{" "}
+                      {action.activityId.title}
+                    </Grid>
+                    <Grid item>
+                      <IconButton
+                        size="medium"
+                        onClick={() => this.stop(action._id)}
+                      >
+                        <StopRounded />
+                      </IconButton>
+                    </Grid>
                   </Grid>
-                  <Grid item>
-                    <IconButton
-                      size="medium"
-                      onClick={() => this.stop(action._id)}
-                    >
-                      <StopRounded />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Typography>{action.description}</Typography>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          );
-        })}
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>{action.description}</Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            );
+          })}
       </div>
     );
   }
