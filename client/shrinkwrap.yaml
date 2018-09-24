@@ -6,8 +6,11 @@ dependencies:
   prop-types: 15.6.2
   react: 16.5.2
   react-dom: 16.5.2
+  react-redux: 5.0.7
   react-router-dom: 4.3.1
   react-scripts: 1.1.5
+  redux: 4.0.0
+  redux-thunk: 2.3.0
 packages:
   /@babel/runtime/7.0.0:
     dependencies:
@@ -5118,6 +5121,10 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-K1aLJl7slExtnA3pw9u7ygNUzY4=
+  /lodash-es/4.17.11:
+    dev: false
+    resolution:
+      integrity: sha512-DHb1ub+rMjjrxqlB3H56/6MXtm1lSksDp2rA2cNWjG8mlDUYFhUj3Di2Zn5IwSU87xLv8tNIQ7sSwE/YOX/D/Q==
   /lodash._reinterpolate/3.0.0:
     dev: false
     resolution:
@@ -6649,6 +6656,21 @@ packages:
     dev: false
     resolution:
       integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+  /react-redux/5.0.7:
+    dependencies:
+      hoist-non-react-statics: 2.5.5
+      invariant: 2.2.4
+      lodash: 4.17.11
+      lodash-es: 4.17.11
+      loose-envify: 1.4.0
+      prop-types: 15.6.2
+    dev: false
+    peerDependencies:
+      react: ^0.14.0 || ^15.0.0-0 || ^16.0.0-0
+      redux: ^2.0.0 || ^3.0.0 || ^4.0.0-0
+    resolution:
+      integrity: sha512-5VI8EV5hdgNgyjfmWzBbdrqUkrVRKlyTKk1sGH3jzM2M2Mhj/seQgPXaz6gVAj2lz/nz688AdTqMO18Lr24Zhg==
+      tarball: 'http://registry.npmjs.org/react-redux/-/react-redux-5.0.7.tgz'
   /react-router-dom/4.3.1:
     dependencies:
       history: 4.7.2
@@ -6875,6 +6897,17 @@ packages:
     dev: false
     resolution:
       integrity: sha1-WiAL+S4ON3UXUv5FsKszD9S2vpk=
+  /redux-thunk/2.3.0:
+    dev: false
+    resolution:
+      integrity: sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
+  /redux/4.0.0:
+    dependencies:
+      loose-envify: 1.4.0
+      symbol-observable: 1.2.0
+    dev: false
+    resolution:
+      integrity: sha512-NnnHF0h0WVE/hXyrB6OlX67LYRuaf/rJcbWvnHHEPCF/Xa/AZpwhs/20WyqzQae5x4SD2F9nPObgBh2rxAgLiA==
   /regenerate/1.4.0:
     dev: false
     resolution:
@@ -8633,5 +8666,8 @@ specifiers:
   prop-types: ^15.6.2
   react: ^16.5.2
   react-dom: ^16.5.2
+  react-redux: ^5.0.7
   react-router-dom: ^4.3.1
   react-scripts: 1.1.5
+  redux: ^4.0.0
+  redux-thunk: ^2.3.0

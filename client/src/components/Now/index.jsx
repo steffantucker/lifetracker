@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import axios from "axios";
 import moment from "moment";
 import {
@@ -17,6 +18,8 @@ import {
 } from "@material-ui/core";
 import { StopRounded } from "@material-ui/icons";
 
+import { init } from "../../redux";
+
 const styles = {
   select: {
     minWidth: 300
@@ -28,22 +31,14 @@ class Now extends Component {
     super(props);
 
     this.state = {
-      actions: [],
-      activities: [],
       activity: ""
     };
     this.classes = props.classes;
   }
 
   componentDidMount() {
-    axios
-      .get("/timers")
-      .then(res => this.setState({ actions: res.data }))
-      .catch(err => console.error(err));
-    axios
-      .get("/activities")
-      .then(res => this.setState({ activities: res.data }))
-      .catch(err => console.error(err));
+    if (!this.props.actionsLoaded || !this.props.activitesLoaded)
+      this.props.init();
   }
 
   stop = id =>
@@ -56,14 +51,12 @@ class Now extends Component {
   handleChange = e => this.setState({ [e.target.name]: e.target.value });
 
   handleSubmit = e => {
-    axios
-      .post(`/timers/start`, { activityId: this.state.activity })
-      .then(res =>
-        this.setState(prev => ({
-          actions: [...prev.actions, res.data],
-          activity: ""
-        })).catch(err => console.log(err))
-      );
+    axios.post(`/timers/start`, { activityId: this.state.activity }).then(res =>
+      this.setState(prev => ({
+        actions: [...prev.actions, res.data],
+        activity: ""
+      })).catch(err => console.log(err))
+    );
   };
 
   render() {
@@ -82,7 +75,7 @@ class Now extends Component {
                 <MenuItem value="">
                   <em>Choose one</em>
                 </MenuItem>
-                {this.state.activities.map(v => (
+                {this.props.activities.map(v => (
                   <MenuItem value={v._id}>{v.title}</MenuItem>
                 ))}
               </Select>
@@ -90,9 +83,9 @@ class Now extends Component {
             <Button onClick={this.handleSubmit}>Start</Button>
           </ExpansionPanelSummary>
         </ExpansionPanel>
-        {this.state.actions.map(action => {
+        {this.props.actions.map(action => {
           return (
-            <ExpansionPanel item>
+            <ExpansionPanel>
               <ExpansionPanelSummary>
                 <Grid container justify="space-between">
                   <Grid item>
@@ -120,4 +113,14 @@ class Now extends Component {
   }
 }
 
-export default withStyles(styles)(Now);
+export default withStyles(styles)(
+  connect(
+    state => ({
+      actionsLoaded: state.isActionsLoaded,
+      activitiesLoaded: state.isActivitesLoaded,
+      actions: state.timers,
+      activities: state.activities
+    }),
+    { init }
+  )(Now)
+);
