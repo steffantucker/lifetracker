@@ -74,7 +74,7 @@ class Now extends Component {
       body.description = this.state.description;
     else
       body.description = this.state.activities.find(
-        v => (v._id = this.state.activity)
+        v => v._id === body.activityId
       ).description;
     axios.post(`/timers/start`, body).then(res => {
       console.log(res);

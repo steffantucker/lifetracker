@@ -64,7 +64,7 @@ class Have extends Component {
                   return (
                     <NestedExpansionChild
                       key={v._id}
-                      summary={() => (
+                      summary={
                         <Typography>
                           <Typography variant="headline">
                             {v.activityId.title}
@@ -73,7 +73,7 @@ class Have extends Component {
                           {" :  "}
                           {moment.duration(end.diff(start)).humanize()}
                         </Typography>
-                      )}
+                      }
                     >
                       <Typography>{v.description}</Typography>
                     </NestedExpansionChild>

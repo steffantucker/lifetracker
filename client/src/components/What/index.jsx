@@ -98,7 +98,11 @@ class What extends Component {
     axios
       .post("/activities", { title, description })
       .then(res =>
-        this.setState(prev => ({ activities: [...prev.activities, res.data] }))
+        this.setState(prev => ({
+          activities: [...prev.activities, res.data],
+          title: "",
+          description: ""
+        }))
       )
       .catch(err => console.error(err));
   };
@@ -107,7 +111,9 @@ class What extends Component {
     axios
       .delete(`/activities/${id}`)
       .then(_ =>
-        this.setState(prev => ({ activities: prev.filter(a => a._id !== id) }))
+        this.setState(prev => ({
+          activities: prev.activities.filter(a => a._id !== id)
+        }))
       )
       .catch(err => console.error(err));
   };
