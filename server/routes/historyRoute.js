@@ -14,7 +14,7 @@ history
         else {
           const response = {
             page: 1,
-            pages: Math.ceil(actions.length / 50),
+            pages: 1,
             actions
           };
           if (req.query.sort) {
@@ -31,9 +31,9 @@ history
                 break;
             }
           }
-          if (actions.length > 50) {
+          if (response.actions.length > 50) {
             // Return 50 results per page, starting at the page sent by user
-            response.actions = actions.length.splice(
+            response.actions = actions.splice(
               (req.query.page && req.query.page * 50 < actions.length
                 ? req.query.page * 50
                 : 0) + 1,
@@ -43,6 +43,7 @@ history
               req.query.page && req.query.page * 50 < actions.length
                 ? req.query.page
                 : 1;
+            response.pages = Math.ceil(actions.length / 50);
           }
           res.send(response);
         }

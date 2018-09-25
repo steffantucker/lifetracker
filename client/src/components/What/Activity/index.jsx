@@ -1,74 +1,89 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { IconButton, Tooltip, Snackbar } from "@material-ui/core";
 import {
-  Card,
-  CardActions,
-  CardContent,
-  Grid,
-  IconButton,
-  Tooltip,
-  Typography,
-  withStyles
-} from "@material-ui/core";
-import { PlayArrowRounded, DeleteRounded } from "@material-ui/icons";
+  PlayArrowRounded,
+  DeleteRounded,
+  CloseRounded
+} from "@material-ui/icons";
 
-const styles = {
-  card: {
-    width: "100%",
-    height: "100%"
-  }
-};
+import { startTimer } from "../../../redux/timers";
 
 class Activity extends Component {
-  constructor(props) {
-    super(props);
-
-    this.classes = this.props.classes;
-  }
-  startAction = () => {
-    // TODO: modal to get action title, then start action
-    // use snackbox to show action started
+  state = {
+    open: false,
+    message: ""
   };
+
+  handleClose = (e, reason) => {
+    if (reason === "clickaway") return;
+    this.setState({ open: false });
+  };
+
+  startAction = () => {
+    this.setState({ open: true, message: `${this.props.title} started` });
+    this.props.startTimer(this.props._id);
+  };
+
   render() {
     return (
-      <Card className={this.classes.card}>
-        <Grid
-          container
-          justify="space-between"
-          direction="column"
-          className={this.classes.card}
-        >
-          <Grid item>
-            <CardContent>
-              <Typography variant="headline">{this.props.title}</Typography>
-              <Typography component="p">{this.props.description}</Typography>
-            </CardContent>
-          </Grid>
-          <Grid item>
-            <CardActions>
-              <Tooltip title="start action">
-                <IconButton size="small">
-                  <PlayArrowRounded />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="delete activity">
-                <IconButton
-                  size="small"
-                  onClick={() => this.props.delete(this.props.id)}
-                >
-                  <DeleteRounded />
-                </IconButton>
-              </Tooltip>
-            </CardActions>
-          </Grid>
-        </Grid>
-      </Card>
+      <div className="activityContainer">
+        <div className="activityTitle">
+          <span>{this.props.title}</span>
+          <span>{this.props.description}</span>
+        </div>
+        <div className="activityActions">
+          {this.props.type === "activity" && <Tooltip title="start action">
+            <IconButton size="small" onClick={this.startAction}>
+              <PlayArrowRounded />
+            </IconButton>
+          </Tooltip>}
+          {this.props.delete && <Tooltip title="delete activity">
+            <IconButton
+              size="small"
+              onClick={() => this.props.delete(this.props._id)}
+            >
+              <DeleteRounded />
+            </IconButton>
+          </Tooltip>}
+        </div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center"
+          }}
+          open={this.state.open}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          ContentProps={{
+            "aria-describedby": "message-id"
+          }}
+          message={<span id="message-id">{this.state.message}</span>}
+          action={[
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              onClick={this.handleClose}
+            >
+              <CloseRounded />
+            </IconButton>
+          ]}
+        />
+      </div>
     );
   }
 }
 
 Activity.propTypes = {
-  classes: PropTypes.object.isRequired
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  delete: PropTypes.func.isRequired,
+  startTimer: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(Activity);
+export default connect(
+  null,
+  { startTimer }
+)(Activity);
