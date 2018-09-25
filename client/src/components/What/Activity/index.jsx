@@ -34,19 +34,19 @@ class Activity extends Component {
           <span>{this.props.description}</span>
         </div>
         <div className="activityActions">
-          <Tooltip title="start action">
+          {this.props.type === "activity" && <Tooltip title="start action">
             <IconButton size="small" onClick={this.startAction}>
               <PlayArrowRounded />
             </IconButton>
-          </Tooltip>
-          <Tooltip title="delete activity">
+          </Tooltip>}
+          {this.props.delete && <Tooltip title="delete activity">
             <IconButton
               size="small"
               onClick={() => this.props.delete(this.props._id)}
             >
               <DeleteRounded />
             </IconButton>
-          </Tooltip>
+          </Tooltip>}
         </div>
         <Snackbar
           anchorOrigin={{

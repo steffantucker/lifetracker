@@ -6,6 +6,7 @@ import { StopRounded } from "@material-ui/icons";
 export default class InfoRow extends Component {
   constructor(props) {
     super(props);
+    console.log(this.props);
 
     this.startTime = moment(this.props.startTime);
     this.endTime = this.props.endTime ? moment(this.props.endTime) : moment();
@@ -34,7 +35,9 @@ export default class InfoRow extends Component {
     return (
       <div className="actionCard">
         <span className="actionTitle">
-          {this.props.activityId.title}{" "}
+          {this.props.activityId.title !== null
+            ? this.props.activityId.title
+            : ""}{" "}
           <span className="actionDuration">({this.state.duration})</span>
         </span>
         <span className="actionDescription">{this.props.description}</span>

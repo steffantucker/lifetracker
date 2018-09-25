@@ -51,6 +51,7 @@ class What extends Component {
             <Activity
               key={activity._id}
               {...activity}
+              type="activity"
               delete={this.deleteActivity}
             />
           ))}
@@ -63,7 +64,7 @@ class What extends Component {
 
   handleSubmit = e => {
     const { title, description } = this.state;
-    this.props.addActivity(title, description)
+    this.props.addActivity(title, description);
   };
 
   deleteActivity = id => this.props.deleteActivity(id);
