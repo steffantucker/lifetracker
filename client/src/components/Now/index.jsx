@@ -1,39 +1,28 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import axios from "axios";
 import moment from "moment";
 import {
-  Button,
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
-  FormControl,
-  Grid,
-  IconButton,
   InputLabel,
+  Button,
   Select,
   MenuItem,
-  Typography,
-  withStyles
+  FormControl,
+  IconButton,
+  TextField
 } from "@material-ui/core";
 import { StopRounded } from "@material-ui/icons";
 
-import { init } from "../../redux";
-
-const styles = {
-  select: {
-    minWidth: 300
-  }
-};
+import { init } from "../../redux/common";
+import { stopTimer, startTimer } from "../../redux/timers";
 
 class Now extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      activity: ""
+      activity: "",
+      description: ""
     };
-    this.classes = props.classes;
   }
 
   componentDidMount() {
@@ -41,86 +30,86 @@ class Now extends Component {
       this.props.init();
   }
 
-  stop = id =>
-    axios.get(`/timers/end/${id}`).then(res =>
-      this.setState(prev => ({
-        actions: prev.actions.filter(v => v._id !== id)
-      }))
-    );
+  stop = id => {
+    this.props.stopTimer(id);
+  };
 
   handleChange = e => this.setState({ [e.target.name]: e.target.value });
 
   handleSubmit = e => {
-    axios.post(`/timers/start`, { activityId: this.state.activity }).then(res =>
-      this.setState(prev => ({
-        actions: [...prev.actions, res.data],
-        activity: ""
-      })).catch(err => console.log(err))
-    );
+    e.preventDefault();
+    this.props.startTimer(this.state.activity, this.state.description);
+    this.setState({ activity: "", description: "" });
   };
 
   render() {
     return (
-      <div>
-        <ExpansionPanel>
-          <ExpansionPanelSummary>
-            <FormControl>
-              <InputLabel htmlFor="activity">New Activity</InputLabel>
-              <Select
-                value={this.state.activity}
-                onChange={this.handleChange}
-                inputProps={{ name: "activity", id: "activity" }}
-                className={this.classes.select}
-              >
-                <MenuItem value="">
-                  <em>Choose one</em>
+      <main className="nowContainer">
+        <form onSubmit={this.handleSubmit} className="nowForm">
+          <FormControl>
+            <InputLabel htmlFor="activity">New Activity</InputLabel>
+            <Select
+              value={this.state.activity}
+              onChange={this.handleChange}
+              name="activity"
+              id="activity"
+            >
+              <MenuItem value="">Choose one</MenuItem>
+              {this.props.activities.map(v => (
+                <MenuItem key={v._id} value={v._id}>
+                  {v.title}
                 </MenuItem>
-                {this.props.activities.map(v => (
-                  <MenuItem value={v._id}>{v.title}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+              ))}
+            </Select>
+            <TextField
+              label="Description"
+              name="description"
+              multiline
+              rows={3}
+              placeholder="optional"
+              onChange={this.handleChange}
+              value={this.state.description}
+            />
             <Button onClick={this.handleSubmit}>Start</Button>
-          </ExpansionPanelSummary>
-        </ExpansionPanel>
-        {this.props.actions.map(action => {
-          return (
-            <ExpansionPanel>
-              <ExpansionPanelSummary>
-                <Grid container justify="space-between">
-                  <Grid item>
-                    {moment(action.startTime).format("lll")} -{" "}
-                    {action.activityId.title}
-                  </Grid>
-                  <Grid item>
+          </FormControl>
+        </form>
+        <div className="nowCards">
+          {this.props.actions &&
+            this.props.actions.map(action => {
+              return (
+                <div key={action._id} className="card">
+                  <div className="cardSummary">
+                    <span className="cardHeader">
+                      {moment(action.startTime).format("lll")} -{" "}
+                      {action.activityId.title} (
+                      {moment
+                        .duration(moment().diff(moment(action.startTime)))
+                        .humanize()}
+                      )
+                    </span>
                     <IconButton
                       size="medium"
                       onClick={() => this.stop(action._id)}
                     >
                       <StopRounded />
                     </IconButton>
-                  </Grid>
-                </Grid>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Typography>{action.description}</Typography>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          );
-        })}
-      </div>
+                  </div>
+                  <div className="cardDetails">{action.description}</div>
+                </div>
+              );
+            })}
+        </div>
+      </main>
     );
   }
 }
 
-export default withStyles(styles)(
-  connect(
-    state => ({
-      actionsLoaded: state.isActionsLoaded,
-      activitiesLoaded: state.isActivitesLoaded,
-      actions: state.timers,
-      activities: state.activities
-    }),
-    { init }
-  )(Now)
-);
+export default connect(
+  state => ({
+    actionsLoaded: state.isActionsLoaded,
+    activitiesLoaded: state.isActivitesLoaded,
+    actions: state.timers,
+    activities: state.activities
+  }),
+  { init, stopTimer, startTimer }
+)(Now);

@@ -3,6 +3,10 @@
   background: #222;
 } */
 
+body {
+  font-family: "Roboto", sans-serif;
+}
+
 .App {
   padding: 0 10%;
 }
@@ -29,6 +33,12 @@
   margin: 0 10px;
 }
 
+.prefix {
+  display: inline-block;
+  min-width: 100px;
+  text-align: right;
+}
+
 .brackets {
   font-size: 1.8rem;
   color: #84d;
@@ -47,4 +57,60 @@
 
 .link:hover {
   font-size: 1.5rem;
+}
+
+.actionCard {
+  padding: 0.2rem 0;
+  padding-left: 1rem;
+}
+.dateContainer {
+  display: flex;
+  flex-direction: column;
+  border-left: 0.2rem #84d solid;
+  border-radius: 0.3rem;
+  margin: 1em 0;
+  padding-left: 0.3rem;
+}
+
+.dateContainer > span:first-child {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.activityActions {
+  align-self: center;
+}
+
+.activityTitle {
+  display: flex;
+  flex-direction: column;
+}
+
+.activityTitle > span:first-child {
+  font-family: "Raleway", sans-serif;
+  font-size: 1.3rem;
+  font-weight: bolder;
+}
+
+.activityContainer {
+  box-sizing: border-box;
+  width: 10rem;
+  height: 10rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  padding-bottom: 0.5rem;
+  border: 0.2rem solid #84d;
+  border-radius: 0.3rem;
+  margin: 0.5rem;
+}
+
+.whatCards {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.whatForm {
+  padding: 0.5rem 0;
 }

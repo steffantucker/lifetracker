@@ -2,26 +2,11 @@ import React, { Component } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import {
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
-  Grid,
-  Button,
-  TextField,
-  withStyles
-} from "@material-ui/core";
-import { ExpandMore } from "@material-ui/icons";
+import { Button, TextField, FormControl } from "@material-ui/core";
 
 import Activity from "./Activity";
-import { init } from "../../redux";
-
-const styles = {
-  gridItem: {
-    width: "100%",
-    height: "100%"
-  }
-};
+import { init } from "../../redux/common";
+import { deleteActivity } from "../../redux/activities";
 
 class What extends Component {
   constructor(props) {
@@ -39,51 +24,41 @@ class What extends Component {
   }
 
   render() {
-    console.log(this.props.activities);
     return (
-      <React.Fragment>
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-            New Activity
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <Grid container direction="column">
-              <TextField
-                id="activityTitle"
-                name="title"
-                label="Name"
-                value={this.state.title}
-                onChange={this.handleChange}
-              />
-              <TextField
-                id="activityDescription"
-                name="description"
-                label="Default description"
-                value={this.state.description}
-                onChange={this.handleChange}
-                multiline
-                rows="2"
-              />
-            </Grid>
-            <Button color="primary" onClick={this.handleSubmit}>
+      <main className="whatContainer">
+        <form className="whatForm">
+          <FormControl>
+            <TextField
+              id="activityTitle"
+              name="title"
+              label="Name"
+              value={this.state.title}
+              onChange={this.handleChange}
+            />
+            <TextField
+              id="activityDescription"
+              name="description"
+              label="Default description"
+              value={this.state.description}
+              onChange={this.handleChange}
+              multiline
+              rows="1"
+            />
+            <Button variant="contained" onClick={this.handleSubmit}>
               Add activity
             </Button>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-        <Grid container>
+          </FormControl>
+        </form>
+        <div className="whatCards">
           {this.props.activities.map(activity => (
-            <Grid item xs={3} className={this.classes.gridItem}>
-              <Activity
-                key={activity._id}
-                id={activity._id}
-                title={activity.title}
-                description={activity.description}
-                delete={this.deleteActivity}
-              />
-            </Grid>
+            <Activity
+              key={activity._id}
+              {...activity}
+              delete={this.deleteActivity}
+            />
           ))}
-        </Grid>
-      </React.Fragment>
+        </div>
+      </main>
     );
   }
 
@@ -99,29 +74,20 @@ class What extends Component {
       .catch(err => console.error(err));
   };
 
-  deleteActivity = id => {
-    axios
-      .delete(`/activities/${id}`)
-      .then(_ =>
-        this.setState(prev => ({ activities: prev.filter(a => a._id !== id) }))
-      )
-      .catch(err => console.error(err));
-  };
+  deleteActivity = id => this.props.deleteActivity(id);
 }
 
 What.propTypes = {
-  classes: PropTypes.object.isRequired,
   init: PropTypes.func.isRequired,
-  actions: PropTypes.array.isRequired,
+  deleteActivity: PropTypes.func.isRequired,
+  activities: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool.isRequired
 };
 
-export default withStyles(styles)(
-  connect(
-    state => ({
-      activities: state.activities,
-      isLoaded: state.isActivitiesLoaded
-    }),
-    { init }
-  )(What)
-);
+export default connect(
+  state => ({
+    activities: state.activities,
+    isLoaded: state.isActivitiesLoaded
+  }),
+  { init, deleteActivity }
+)(What);

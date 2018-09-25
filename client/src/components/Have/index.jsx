@@ -1,17 +1,9 @@
 import React, { Component } from "react";
 import moment from "moment";
 import { connect } from "react-redux";
-import { Typography, withStyles } from "@material-ui/core";
 
-import NestedExpansions from "../NestedExpansions";
-import NestedExpansionChild from "../NestedExpansions/NestedExpansionChild";
-import {init} from "../../redux"
-
-const styles = {
-  cards: {
-    width: "100%"
-  }
-};
+import { init } from "../../redux/common";
+import InfoRow from "../InfoRow";
 
 class Have extends Component {
   constructor(props) {
@@ -21,64 +13,36 @@ class Have extends Component {
       actions: [],
       sortedKeys: []
     };
-
-    this.classes = this.props.classes;
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (!this.props.isLoaded) this.props.init();
+  }
 
   render() {
     return (
-      <React.Fragment>
+      <main className="haveContainer">
         {this.props.actions &&
           this.props.sortedKeys.map(key => {
             return (
-              <NestedExpansions
-                key={key}
-                summary={() => (
-                  <Typography variant="headline">
-                    {moment(key).format("ll")}
-                  </Typography>
-                )}
-              >
-                {this.props.actions[key].map(v => {
-                  const start = moment(v.startTime),
-                    end = moment(v.endTime);
-                  const format =
-                    start.dayOfYear() === end.dayOfYear() ? "LT" : "lll";
-                  return (
-                    <NestedExpansionChild
-                      key={v._id}
-                      summary={() => (
-                        <Typography>
-                          <Typography variant="headline">
-                            {v.activityId.title}
-                          </Typography>{" "}
-                          {start.format(format)} - {end.format(format)}
-                          {" :  "}
-                          {moment.duration(end.diff(start)).humanize()}
-                        </Typography>
-                      )}
-                    >
-                      <Typography>{v.description}</Typography>
-                    </NestedExpansionChild>
-                  );
-                })}
-              </NestedExpansions>
+              <div className="dateContainer" key={key}>
+                <span>{moment(key).format("ll")}</span>
+                {this.props.actions[key].map(v => (
+                  <InfoRow key={v._id} {...v} />
+                ))}
+              </div>
             );
           })}
-      </React.Fragment>
+      </main>
     );
   }
 }
 
-export default withStyles(styles)(
-  connect(
-    state => ({
-      actions: state.actions,
-      isLoaded: state.isActionsLoaded,
-      sortedKeys: state.sortedKeys
-    }),
-    { init }
-  )(Have)
-);
+export default connect(
+  state => ({
+    actions: state.actions,
+    isLoaded: state.isActionsLoaded,
+    sortedKeys: state.sortedKeys
+  }),
+  { init }
+)(Have);
