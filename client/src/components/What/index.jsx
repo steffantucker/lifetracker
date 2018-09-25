@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Button, TextField, FormControl } from "@material-ui/core";
 
 import Activity from "./Activity";
 import { init } from "../../redux/common";
-import { deleteActivity } from "../../redux/activities";
+import { deleteActivity, addActivity } from "../../redux/activities";
 
 class What extends Component {
   constructor(props) {
@@ -15,8 +14,6 @@ class What extends Component {
       title: "",
       description: ""
     };
-
-    this.classes = props.classes;
   }
 
   componentDidMount() {
@@ -66,12 +63,7 @@ class What extends Component {
 
   handleSubmit = e => {
     const { title, description } = this.state;
-    axios
-      .post("/activities", { title, description })
-      .then(res =>
-        this.setState(prev => ({ activities: [...prev.activities, res.data] }))
-      )
-      .catch(err => console.error(err));
+    this.props.addActivity(title, description)
   };
 
   deleteActivity = id => this.props.deleteActivity(id);
@@ -89,5 +81,5 @@ export default connect(
     activities: state.activities,
     isLoaded: state.isActivitiesLoaded
   }),
-  { init, deleteActivity }
+  { init, deleteActivity, addActivity }
 )(What);

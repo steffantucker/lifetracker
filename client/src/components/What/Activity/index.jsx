@@ -1,19 +1,28 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { IconButton, Tooltip } from "@material-ui/core";
-import { PlayArrowRounded, DeleteRounded } from "@material-ui/icons";
+import { IconButton, Tooltip, Snackbar } from "@material-ui/core";
+import {
+  PlayArrowRounded,
+  DeleteRounded,
+  CloseRounded
+} from "@material-ui/icons";
 
 import { startTimer } from "../../../redux/timers";
 
 class Activity extends Component {
-  constructor(props) {
-    super(props);
+  state = {
+    open: false,
+    message: ""
+  };
 
-    this.classes = this.props.classes;
-  }
+  handleClose = (e, reason) => {
+    if (reason === "clickaway") return;
+    this.setState({ open: false });
+  };
 
   startAction = () => {
+    this.setState({ open: true, message: `${this.props.title} started` });
     this.props.startTimer(this.props._id);
   };
 
@@ -26,19 +35,42 @@ class Activity extends Component {
         </div>
         <div className="activityActions">
           <Tooltip title="start action">
-            <IconButton size="small">
+            <IconButton size="small" onClick={this.startAction}>
               <PlayArrowRounded />
             </IconButton>
           </Tooltip>
           <Tooltip title="delete activity">
             <IconButton
               size="small"
-              onClick={() => this.props.delete(this.props.id)}
+              onClick={() => this.props.delete(this.props._id)}
             >
               <DeleteRounded />
             </IconButton>
           </Tooltip>
         </div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center"
+          }}
+          open={this.state.open}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          ContentProps={{
+            "aria-describedby": "message-id"
+          }}
+          message={<span id="message-id">{this.state.message}</span>}
+          action={[
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              onClick={this.handleClose}
+            >
+              <CloseRounded />
+            </IconButton>
+          ]}
+        />
       </div>
     );
   }

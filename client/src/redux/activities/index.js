@@ -1,5 +1,19 @@
 import axios from "axios";
 
+export const addActivity = (title, description) => {
+  return function(dispatch) {
+    axios
+      .post("/activities", { title, description })
+      .then(res =>
+        dispatch({
+          type: "ADD_ACTIVITY",
+          data: res.data
+        })
+      )
+      .catch(err => console.error(err));
+  };
+};
+
 export const deleteActivity = id => {
   return function(dispatch) {
     axios
@@ -22,6 +36,8 @@ export const activities = (prev = [], action) => {
   switch (action.type) {
     case "INIT_ACTIVITIES":
       return action.data;
+    case "ADD_ACTIVITY":
+      return [...prev, action.data]
     case "DELETE_ACTIVITY":
       return prev.filter(v => v._id !== action.id);
     default:

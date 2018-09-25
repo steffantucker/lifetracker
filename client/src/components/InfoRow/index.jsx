@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import moment from "moment";
+import { IconButton } from "@material-ui/core";
+import { StopRounded } from "@material-ui/icons";
 
 export default class InfoRow extends Component {
   constructor(props) {
@@ -31,13 +33,25 @@ export default class InfoRow extends Component {
       this.startTime.dayOfYear() === this.endTime.dayOfYear() ? "LT" : "lll";
     return (
       <div className="actionCard">
-        <span className="actionTitle">{this.props.activityId.title}</span>{" "}
-        <span className="actionDuration">({this.state.duration})</span>
+        <span className="actionTitle">
+          {this.props.activityId.title}{" "}
+          <span className="actionDuration">({this.state.duration})</span>
+        </span>
         <span className="actionDescription">{this.props.description}</span>
         <span className="actionTimes">
           {this.startTime.format(format)}{" "}
-          {this.props.endTime && ` - ${this.state.endTime.format(format)}`}
+          {this.props.endTime && ` - ${this.endTime.format(format)}`}
         </span>
+        {this.props.stop && (
+          <span className="actionActions">
+            <IconButton
+              size="medium"
+              onClick={() => this.props.stop(this.props._id)}
+            >
+              <StopRounded />
+            </IconButton>
+          </span>
+        )}
       </div>
     );
   }

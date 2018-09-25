@@ -1,17 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import moment from "moment";
 import {
   InputLabel,
   Button,
   Select,
   MenuItem,
   FormControl,
-  IconButton,
   TextField
 } from "@material-ui/core";
-import { StopRounded } from "@material-ui/icons";
 
+import InfoRow from "../InfoRow";
 import { init } from "../../redux/common";
 import { stopTimer, startTimer } from "../../redux/timers";
 
@@ -36,7 +34,7 @@ class Now extends Component {
 
   handleChange = e => this.setState({ [e.target.name]: e.target.value });
 
-  handleSubmit = e => {
+  start = e => {
     e.preventDefault();
     this.props.startTimer(this.state.activity, this.state.description);
     this.setState({ activity: "", description: "" });
@@ -45,7 +43,7 @@ class Now extends Component {
   render() {
     return (
       <main className="nowContainer">
-        <form onSubmit={this.handleSubmit} className="nowForm">
+        <form className="nowForm">
           <FormControl>
             <InputLabel htmlFor="activity">New Activity</InputLabel>
             <Select
@@ -70,33 +68,15 @@ class Now extends Component {
               onChange={this.handleChange}
               value={this.state.description}
             />
-            <Button onClick={this.handleSubmit}>Start</Button>
+            <Button variant="contained" onClick={this.start}>
+              Start
+            </Button>
           </FormControl>
         </form>
         <div className="nowCards">
           {this.props.actions &&
             this.props.actions.map(action => {
-              return (
-                <div key={action._id} className="card">
-                  <div className="cardSummary">
-                    <span className="cardHeader">
-                      {moment(action.startTime).format("lll")} -{" "}
-                      {action.activityId.title} (
-                      {moment
-                        .duration(moment().diff(moment(action.startTime)))
-                        .humanize()}
-                      )
-                    </span>
-                    <IconButton
-                      size="medium"
-                      onClick={() => this.stop(action._id)}
-                    >
-                      <StopRounded />
-                    </IconButton>
-                  </div>
-                  <div className="cardDetails">{action.description}</div>
-                </div>
-              );
+              return <InfoRow key={action._id} {...action} stop={this.stop} />;
             })}
         </div>
       </main>
